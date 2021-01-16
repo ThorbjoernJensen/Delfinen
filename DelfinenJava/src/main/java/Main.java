@@ -1,5 +1,8 @@
+import UI.MainMenu;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello");
+        MainMenu mainMenu = new MainMenu();
+        mainMenu.run();
     }
 }
