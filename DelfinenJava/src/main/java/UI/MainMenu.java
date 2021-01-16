@@ -1,14 +1,27 @@
 package UI;
 
+import Domain.Subscriber;
+import Persistence.Database;
+import Persistence.DbMembersMapper;
 import Util.Input;
 
+import java.util.List;
+
+
 public class MainMenu {
+    private final String USER = "testdb_user";
+    private final String PASSWORD = "1234";
+    private final String URL = "jdbc:mysql://localhost:3306/delfinen_db?serverTimezone=CET&useSSL=false";
+
+    Database database = new Database(USER,PASSWORD,URL);
+
+    DbMembersMapper dbMembersMapper = new DbMembersMapper(database);
+
     public void run(){
         showMainMenu();
         int valg= Input.getInt("Indtast dit valg: ");
         switch (valg){
             case (1):
-                System.out.println("det rigtige valg");
                 showMembers();
                 break;
 
@@ -33,7 +46,11 @@ public class MainMenu {
     }
 
     private void showMembers() {
-        DbMembersMapper.showAllMembers;
+        List<Subscriber> members = dbMembersMapper.showAllMembers();
+        for (Subscriber s : members) {
+            System.out.println("medlemsnr "+ s.getMnr() + ": "+    s.getFornavn() + "  " + s.getEfternavn());
+
+        }
 
 
 
