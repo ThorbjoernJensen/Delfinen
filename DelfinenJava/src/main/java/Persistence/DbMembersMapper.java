@@ -1,6 +1,7 @@
 package Persistence;
 
-import Domain.Subscriber;
+import Domain.Member;
+import Domain.MemberType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,9 +18,9 @@ public class DbMembersMapper {
         this.database = database;
     }
 
-    public List<Subscriber> showAllMembers() {
-        List<Subscriber> memberList = new ArrayList<>();
-        String sql = "select * from medlem";
+    public List<Member> showAllMembers() {
+        List<Member> memberList = new ArrayList<>();
+        String sql = "select * from member";
         try (Connection connection = database.connect()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ResultSet rs = ps.executeQuery();
@@ -27,16 +28,11 @@ public class DbMembersMapper {
                     int mnr= rs.getInt("mnr");
                     String fornavn = rs.getString("fornavn");
                     String efternavn = rs.getString("efternavn");
-                    memberList.add(new Subscriber(mnr, fornavn, efternavn));
+                    String medlemstypeString = rs.getString("medlemstype");
+                    MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
+                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype));
 
                 }
-
-//                    (int mnr, String fornavn, String efternavn) {
-//                        this.mnr = mnr;
-//                        this.fornavn = fornavn;
-//                        this.efternavn = efternavn;
-//
-
 
             }
 

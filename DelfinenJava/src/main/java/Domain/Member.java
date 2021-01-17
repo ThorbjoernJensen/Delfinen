@@ -1,14 +1,27 @@
 package Domain;
 
-public class Subscriber {
+public class Member {
     int mnr;
     String fornavn;
     String efternavn;
 
-    public Subscriber(int mnr, String fornavn, String efternavn) {
+    public MemberType getMedlemstype() {
+        return medlemstype;
+    }
+
+    public void setMedlemstype(MemberType medlemstype) {
+        this.medlemstype = medlemstype;
+    }
+
+    MemberType medlemstype;
+
+    public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype) {
         this.mnr = mnr;
         this.fornavn = fornavn;
         this.efternavn = efternavn;
+        this.medlemstype = medlemstype;
+
+
     }
 
     public int getMnr() {

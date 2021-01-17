@@ -1,6 +1,6 @@
 package UI;
 
-import Domain.Subscriber;
+import Domain.Member;
 import Persistence.Database;
 import Persistence.DbMembersMapper;
 import Util.Input;
@@ -46,9 +46,9 @@ public class MainMenu {
     }
 
     private void showMembers() {
-        List<Subscriber> members = dbMembersMapper.showAllMembers();
-        for (Subscriber s : members) {
-            System.out.println("medlemsnr "+ s.getMnr() + ": "+    s.getFornavn() + "  " + s.getEfternavn());
+        List<Member> members = dbMembersMapper.showAllMembers();
+        for (Member s : members) {
+            System.out.println("medlemsnr "+ s.getMnr() + ": "+    s.getFornavn() + "  " + s.getEfternavn() + ", type: " + s.getMedlemstype());
 
         }
 
