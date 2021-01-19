@@ -1,6 +1,10 @@
 package Domain;
 
-public class Member {
+public class Member implements Observer {
+    private String message;
+    private Subject cashier;
+
+
     int mnr;
     String fornavn;
     String efternavn;
@@ -20,7 +24,15 @@ public class Member {
         this.fornavn = fornavn;
         this.efternavn = efternavn;
         this.medlemstype = medlemstype;
+            }
 
+    public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, Subject cashier) {
+        this.mnr = mnr;
+        this.fornavn = fornavn;
+        this.efternavn = efternavn;
+        this.medlemstype = medlemstype;
+        this.cashier = cashier;
+        cashier.registerObserver(this);
 
     }
 
@@ -46,5 +58,10 @@ public class Member {
 
     public void setEfternavn(String efternavn) {
         this.efternavn = efternavn;
+    }
+
+    public void update(String message) {
+        this.message = message;
+        System.out.println("medlem nr. " + mnr  + " har fået beskeden: " + message + " fra kasseren. ");
     }
 }
