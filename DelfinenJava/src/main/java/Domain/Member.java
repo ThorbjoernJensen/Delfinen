@@ -62,6 +62,6 @@ public class Member implements Observer {
 
     public void update(String message) {
         this.message = message;
-        System.out.println("medlem nr. " + mnr  + " har fået beskeden: " + message + " fra kasseren. ");
+        System.out.println("medlem nr. " + mnr  + " har fået beskeden: \"" + message.hashCode() + "\" fra kasseren. ");
     }
 }
