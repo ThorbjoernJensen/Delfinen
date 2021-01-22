@@ -3,6 +3,7 @@ package UI;
 import Domain.Cashier;
 import Domain.Member;
 import Domain.Subject;
+import Domain.Subscription;
 import Persistence.Database;
 import Persistence.DbMembersMapper;
 import Util.Input;
@@ -66,12 +67,36 @@ public class MainMenu {
 
         }
 
-        private void cashierMessage () {
+//        man kunne sende en besked herfra - men man kunne også have det som en funktion i cashier-klassen.
+//    må "domæne-klasser" ikke have nogle handlinger? der kunne f.eks. være et objekt der hed pizzabager. eller admin
+//    brugeren selv er vel også en slags objekt -
+
+        private void cashierMessage() {
             List<Member> members = dbMembersMapper.showAllMembers();
             Subject cashier = new Cashier(members);
             Cashier cashier1 = new Cashier(members);
             cashier1.setMessage("så er der kontingent.");
 
         }
+
+        private void cashierNewAnnualSubscription(){
+//            List<Member> members = dbMembersMapper.showAllMembers();
+//            Subject cashier = new Cashier(members);
+//            Cashier cashier1 = new Cashier(members);
+//            cashier1.setMessage("så er der kontingent.");
+            Subscription subscription = new Subscription(2021, "21-12-2021", 3000);
+            dbMembersMapper.printNewAnnualSubscription(subscription);
+        }
+
+        private void cashierSendPaymentRequestToAll(){
+            List<Member> members = dbMembersMapper.showAllMembers();
+            Subject cashier = new Cashier(members);
+            Cashier cashier1 = new Cashier(members);
+            cashier1.setMessage("så er der kontingent.");
+
+
+
+        }
+
 
     }

@@ -7,11 +7,21 @@ public class Cashier implements Subject {
 
     //    i første omgang bare en simpel kasser, der sender en besked ud.
     private String message = "";
+    private Subscription newPayment;
 
 
 //    hvorfor skal vi sende en liste med når vi instantierer?
     public Cashier(List<Member> members) {
         this.members = members;
+    }
+
+    public Subscription getNewPayment() {
+        return newPayment;
+    }
+
+    public void setNewPayment(Subscription newPayment) {
+        this.newPayment = newPayment;
+        notifyObserver();
     }
 
     //dette kunne være en ny opkrævning, men også en rykker
@@ -38,7 +48,7 @@ public class Cashier implements Subject {
     @Override
     public void notifyObserver() {
         for (Member member : members) {
-            member.update(message);
+            member.update(newPayment);
         }
 
     }

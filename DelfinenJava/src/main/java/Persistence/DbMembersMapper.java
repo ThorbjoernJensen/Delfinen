@@ -28,7 +28,8 @@ public class DbMembersMapper {
                     String efternavn = rs.getString("efternavn");
                     String medlemstypeString = rs.getString("medlemstype");
                     MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
-                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype));
+                    int aargang = rs.getInt("aargang");
+                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, aargang));
                 }
             }
         } catch (SQLException throwables) {
@@ -36,14 +37,18 @@ public class DbMembersMapper {
         }
         return memberList;
     }
-    public boolean createNewSubscription (Subscription subscription){
+
+
+//    kunne også være, at det var smart at returnere objektet...
+    public boolean printNewAnnualSubscription (Subscription subscription){
         boolean result = false;
         int newId = 0;
-        String sql = "insert into pizza (pizza_no, name, ingredients, price) values (?,?,?,?)";
+        String sql = "insert into subscription (due_date, amount, year) values (?,?,?)";
         try (Connection connection = database.connect()) {
             try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setInt(1, subscription.);
-
+                ps.setString(1, subscription.getDuedate());
+                ps.setInt(2, subscription.getAmount());
+                ps.setInt(3, subscription.getYear());
 
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected == 1) {
@@ -52,17 +57,18 @@ public class DbMembersMapper {
                 ResultSet idResultset = ps.getGeneratedKeys();
                 if (idResultset.next()) {
                     newId = idResultset.getInt(1);
-                    pizza.setPizzaId(newId);
+                    subscription.setSubscriptionId(newId);
                 } else {
-                    pizza = null;
+                    subscription= null;
                 }
             } catch (Exception e) {
-                throw new ExceptionHandling(e);
+                e.printStackTrace();
             }
         } catch (Exception e) {
-            throw new ExceptionHandling(e);
+            e.printStackTrace();
         }
-        return pizza;
+        return result;
+
     }
 
 
@@ -99,4 +105,4 @@ public class DbMembersMapper {
 //    }
 
 
-}
+
