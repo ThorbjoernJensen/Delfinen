@@ -1,5 +1,7 @@
 package Domain;
 
+import java.time.Year;
+
 public class Member implements Observer {
     private String message;
     private Subject cashier;
@@ -11,12 +13,10 @@ public class Member implements Observer {
     private MemberType medlemstype;
     private int aargang;
 
+    private Subscription annualSubscription;
+    private int memberPayment;
 
-
-    private int annualSubscription;
-    private int myPayment;
-
-
+    private int balance;
 
     public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, int aargang) {
         this.mnr = mnr;
@@ -24,9 +24,9 @@ public class Member implements Observer {
         this.efternavn = efternavn;
         this.medlemstype = medlemstype;
         this.aargang = aargang;
-            }
+    }
 
-//            constructor til at implementere observer pattern
+    //            constructor til at implementere observer pattern
     public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, Subject cashier, int aargang) {
         this.mnr = mnr;
         this.fornavn = fornavn;
@@ -61,6 +61,7 @@ public class Member implements Observer {
     public void setEfternavn(String efternavn) {
         this.efternavn = efternavn;
     }
+
     public MemberType getMedlemstype() {
         return medlemstype;
     }
@@ -77,20 +78,57 @@ public class Member implements Observer {
         this.aargang = aargang;
     }
 
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+
+
+    }
+
     //    hvis vi overrider update-funktionen giver det cashier mulighed for både at sende beskeder og opkrævning ud fra samme interface
 
     public void update(String message) {
         this.message = message;
-        System.out.println("medlem nr. " + mnr  + " har fået beskeden: \"" + message.hashCode() + "\" fra kasseren. ");
+        System.out.println("medlem nr. " + mnr + " har fået beskeden: \"" + message.hashCode() + "\" fra kasseren. ");
     }
 
     public void update(Subscription newPayment) {
-        this.annualSubscription = annualSubscription;
+        this.annualSubscription = newPayment;
         calculateMyPayment();
+//        System.out.println("medlem nr. " + mnr + " skal betale " + memberPayment);
     }
 
-    public void calculateMyPayment(){
+    public int getMemberPayment() {
+        return memberPayment;
+    }
 
+    public int calculateAgeAtSubscriptionTime() {
+        int year = Year.now().getValue();
+        return year - aargang;
 
     }
+
+    //    ville være oplagt at omregne til procent-rabat, så det er lettere at styre efter index
+//    pt. bruger vi slet ikke det subscription-objekt der bliver sendt
+    public void calculateMyPayment() {
+//        if (medlemstype==) todo implementer enum til aktiv/passiv og brug det til at beregne pris
+        if (calculateAgeAtSubscriptionTime() < 18) {
+            memberPayment = 1000;
+        }
+
+        if (calculateAgeAtSubscriptionTime() >= 18) {
+            memberPayment = 1600;
+            if (calculateAgeAtSubscriptionTime() < 59) {
+                memberPayment = 1200;
+            }
+        }
+
+    }
+
+
 }
+

@@ -23,7 +23,7 @@ public class DbMembersMapper {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    int mnr= rs.getInt("mnr");
+                    int mnr = rs.getInt("member_id");
                     String fornavn = rs.getString("fornavn");
                     String efternavn = rs.getString("efternavn");
                     String medlemstypeString = rs.getString("medlemstype");
@@ -39,8 +39,9 @@ public class DbMembersMapper {
     }
 
 
-//    kunne også være, at det var smart at returnere objektet...
-    public boolean printNewAnnualSubscription (Subscription subscription){
+    //    kunne også være, at det var smart at returnere objektet...
+//    skulle den her tilhøre en anden mapper-klasse?
+    public boolean printNewAnnualSubscription(Subscription subscription) {
         boolean result = false;
         int newId = 0;
         String sql = "insert into subscription (due_date, amount, year) values (?,?,?)";
@@ -59,7 +60,7 @@ public class DbMembersMapper {
                     newId = idResultset.getInt(1);
                     subscription.setSubscriptionId(newId);
                 } else {
-                    subscription= null;
+                    subscription = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -71,38 +72,54 @@ public class DbMembersMapper {
 
     }
 
+    public void insertMemberPayment(Subscription subscription, Member member) {
+        boolean result = false;
+        int newId = 0;
+        String sql = "insert into subscription_payments (subscription_id, member_id, amount) values (?,?,?)";
+        try (Connection connection = database.connect()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setInt(1, subscription.getSubscriptionId());
+                ps.setInt(2, member.getMnr());
+                ps.setInt(3, member.getMemberPayment());
+                ps.executeUpdate();
 
+//                Behøver vi et objekt som svarer til tabellen? skal der være 1:1 mellem java og database? det giver ikke rigtig mening..
 
-}
-//    public Pizza insertPizza(Pizza pizza) throws Exception {
-//        boolean result = false;
-//        int newId = 0;
-//        String sql = "insert into pizza (pizza_no, name, ingredients, price) values (?,?,?,?)";
-//        try (Connection connection = database.connect()) {
-//            try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-//                ps.setInt(1, pizza.getPizzaNo());
-//                ps.setString(2, pizza.getName());
-//                ps.setString(3, pizza.getIngredients());
-//                ps.setInt(4, pizza.getPrice());
-//                int rowsAffected = ps.executeUpdate();
-//                if (rowsAffected == 1) {
-//                    result = true;
-//                }
 //                ResultSet idResultset = ps.getGeneratedKeys();
 //                if (idResultset.next()) {
 //                    newId = idResultset.getInt(1);
-//                    pizza.setPizzaId(newId);
+//                    subscription.setSubscriptionId(newId);
 //                } else {
-//                    pizza = null;
-//                }
-//            } catch (Exception e) {
-//                throw new ExceptionHandling(e);
-//            }
-//        } catch (Exception e) {
-//            throw new ExceptionHandling(e);
-//        }
-//        return pizza;
-//    }
+//                    subscription= null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getMemberBalance(int mnr) {
+//        int i = 5;
+//        StringBuilder sql = new StringBuilder("select * from subscription_payments where member_id = ");
+//        sql.append(i);
+//        sql.append(" and status=1");
+
+        String sql = "select * from subscription_payments where member_id = " + mnr + " and status=1";
+        int restance = 0;
+        try (Connection connection = database.connect()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    restance = restance + rs.getInt("amount");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return restance;
+    }
+}
+
+
 
 
 

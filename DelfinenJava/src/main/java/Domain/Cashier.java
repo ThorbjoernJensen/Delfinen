@@ -31,6 +31,11 @@ public class Cashier implements Subject {
         notifyObserver();
     }
 
+    public void setSubscription(Subscription newPayment) {
+        this.newPayment = newPayment;
+        notifyObserver();
+    }
+
 
 //    det er vel ikke helt sådan at vi skal have oprettet en medlemsliste - ved at de enkelte objekter selv tilmelder sig.
     @Override
