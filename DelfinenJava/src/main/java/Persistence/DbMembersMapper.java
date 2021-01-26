@@ -69,6 +69,37 @@ public class DbMembersMapper {
         return memberList;
     }
 
+    public boolean insertNewMember(Member member) {
+        boolean result= false;
+        int newId = 0;
+        String sql = "insert into member (fornavn, efternavn, medlemstype, engagement, aargang) values(?,?,?,?,?)";
+//        (int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang)
+        try (Connection connection = database.connect()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, member.getFornavn());
+                ps.setString(2, member.getEfternavn());
+                ps.setString(3, member.getMedlemstype().toString());
+                ps.setString(4, member.getEngagement().toString());
+                ps.setInt(5, member.getAargang());
+
+                int rowsAffected = ps.executeUpdate();
+                if(rowsAffected ==1){result= true;}
+
+                ResultSet resultSet = ps.getGeneratedKeys();
+                newId= resultSet.getInt(1);
+                member.setMnr(newId);
+// else = null?
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
+
+    }
+
+
     //    kunne også være, at det var smart at returnere objektet...
 //    skulle den her tilhøre en anden mapper-klasse?
     public boolean printNewAnnualSubscription(Subscription subscription) {

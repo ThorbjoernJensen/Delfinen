@@ -76,7 +76,7 @@ public class MainMenu {
 
     public void showMainMenu() {
         System.out.println("**** Hovedmenu for svømmeklubben DELFINEN's ITSYSTEM ****");
-        System.out.println("Du har følgende valmligheder:");
+        System.out.println("Du har følgende valgmligheder:");
         System.out.println("1: vis medlemsliste");
         System.out.println("3: varsel om ny kontingent-betaling til alle medlemmer");
         System.out.println("4: send opkrævning af kontingent til alle medlemmer");
@@ -95,9 +95,6 @@ public class MainMenu {
     }
 
 
-//        man kunne sende en besked herfra - men man kunne også have det som en funktion i cashier-klassen.
-//    må "domæne-klasser" ikke have nogle handlinger/initiativ? I Jons design ser det ud til at alt initiativ udgår fra UI.
-//    der kunne f.eks. være et objekt der hed pizzabager. eller admin brugeren selv er vel også en slags objekt -
     private void cashierMessage() {
         List<Member> members = dbMembersMapper.showAllMembers();
         Subject cashier = new Cashier(members);

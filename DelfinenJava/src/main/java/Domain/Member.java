@@ -8,6 +8,9 @@ public class Member implements Observer {
     private String fornavn;
     private String efternavn;
     private MemberType medlemstype;
+
+
+
     private MemberActivityLevel engagement;
     private int aargang;
 
@@ -96,6 +99,14 @@ public class Member implements Observer {
 
     public int getBalance() {
         return balance;
+    }
+
+    public MemberActivityLevel getEngagement() {
+        return engagement;
+    }
+
+    public void setEngagement(MemberActivityLevel engagement) {
+        this.engagement = engagement;
     }
 
 
