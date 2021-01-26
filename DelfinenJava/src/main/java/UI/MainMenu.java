@@ -1,9 +1,6 @@
 package UI;
 
-import Domain.Cashier;
-import Domain.Member;
-import Domain.Subject;
-import Domain.Subscription;
+import Domain.*;
 import Persistence.Database;
 import Persistence.DbMembersMapper;
 import Util.Input;
@@ -31,7 +28,12 @@ public class MainMenu {
                     showMembers();
                     System.out.println("\n");
                     break;
+                case (2): {
+                    insertNewMember();
 
+                    System.out.println("\n");
+                    break;
+                }
                 case (3): {
                     cashierMessage();
                     System.out.println("\n");
@@ -78,6 +80,8 @@ public class MainMenu {
         System.out.println("**** Hovedmenu for svømmeklubben DELFINEN's ITSYSTEM ****");
         System.out.println("Du har følgende valgmligheder:");
         System.out.println("1: vis medlemsliste");
+        System.out.println("2: opret nyt medlem");
+
         System.out.println("3: varsel om ny kontingent-betaling til alle medlemmer");
         System.out.println("4: send opkrævning af kontingent til alle medlemmer");
         System.out.println("5: udskriv saldo for for alle medlemmer");
@@ -94,6 +98,26 @@ public class MainMenu {
         }
     }
 
+    private void insertNewMember() {
+        //        (int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang)
+        String fornavn = Input.getString("Indtast fornavn: ");
+        String efternavn = Input.getString("Indtast efternavn: ");
+
+        String medlemstypeString = Input.getString("motionist/konkurrence?: ");
+        MemberType medlemstype = MemberType.valueOf(medlemstypeString);
+
+        String engagementString = Input.getString("aktiv/passiv?: ");
+        MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
+
+        int aargang = Input.getInt("Indtast fødselsår: ");
+
+        Member newMember = new Member(fornavn, efternavn, medlemstype, engagement, aargang);
+        boolean succes = dbMembersMapper.insertNewMember(newMember);
+        if(succes){
+            System.out.println("*************** "+ newMember.getFornavn() + " er nu en uundværlig del af vores svømmeklub. *************** ");
+        }
+
+    }
 
     private void cashierMessage() {
         List<Member> members = dbMembersMapper.showAllMembers();
@@ -122,14 +146,14 @@ public class MainMenu {
         List<Member> members = dbMembersMapper.showAllMembersWithBalance();
 //        System.out.println(dbMembersMapper.getMemberBalance(5));
         for (Member m : members) {
-           System.out.println("medlem nr. " + m.getMnr() + " skylder " + m.getBalance() + " kr.");
+            System.out.println("medlem nr. " + m.getMnr() + " skylder " + m.getBalance() + " kr.");
         }
     }
 
     private void showBadPayers() {
         List<Member> members = dbMembersMapper.showAllMembersWithBalance();
-        for (Member m : members){
-            if (m.getBalance()>0){
+        for (Member m : members) {
+            if (m.getBalance() > 0) {
                 System.out.println("medlem nr. " + m.getMnr() + " skylder " + m.getBalance() + " kr.");
             }
         }
@@ -138,15 +162,14 @@ public class MainMenu {
     private void paySubscriptionForMember() {
         int valg = Input.getInt("indtast medlemsnummer: ");
         int debt = dbMembersMapper.getMemberBalance(valg);
-        System.out.println("medlem med nr. "+ valg + " skylder " + debt +" kr.");
+        System.out.println("medlem med nr. " + valg + " skylder " + debt + " kr.");
 
         String valg2 = Input.getString("betal gæld? j/n: ");
-        if(valg2.equalsIgnoreCase("j")){
+        if (valg2.equalsIgnoreCase("j")) {
             dbMembersMapper.payMemberDebt(valg);
 
             System.out.println("gælden er nu slettet i vores system");
-        }
-        else{
+        } else {
             System.out.println("vi betalte ikke nogen gæld.");
         }
     }

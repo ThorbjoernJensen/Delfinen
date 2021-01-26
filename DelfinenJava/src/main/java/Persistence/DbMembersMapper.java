@@ -70,7 +70,7 @@ public class DbMembersMapper {
     }
 
     public boolean insertNewMember(Member member) {
-        boolean result= false;
+        boolean result = false;
         int newId = 0;
         String sql = "insert into member (fornavn, efternavn, medlemstype, engagement, aargang) values(?,?,?,?,?)";
 //        (int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang)
@@ -83,11 +83,15 @@ public class DbMembersMapper {
                 ps.setInt(5, member.getAargang());
 
                 int rowsAffected = ps.executeUpdate();
-                if(rowsAffected ==1){result= true;}
+                if (rowsAffected == 1) {
+                    result = true;
+                }
 
                 ResultSet resultSet = ps.getGeneratedKeys();
-                newId= resultSet.getInt(1);
-                member.setMnr(newId);
+                if (resultSet.next()) {
+                    newId = resultSet.getInt(1);
+                    member.setMnr(newId);
+                }
 // else = null?
 
             }

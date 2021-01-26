@@ -21,7 +21,14 @@ public class Member implements Observer {
     private String message;
     private Subject cashier;
 
-
+//    constructor til insertNewMember
+    public Member(String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang) {
+        this.fornavn = fornavn;
+        this.efternavn = efternavn;
+        this.medlemstype = medlemstype;
+        this.engagement = engagement;
+        this.aargang = aargang;
+    }
 
     public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang) {
         this.mnr = mnr;
