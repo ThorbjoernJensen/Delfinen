@@ -1,6 +1,7 @@
 package Persistence;
 
 import Domain.Member;
+import Domain.MemberActivityLevel;
 import Domain.MemberType;
 import Domain.Subscription;
 
@@ -28,8 +29,10 @@ public class DbMembersMapper {
                     String efternavn = rs.getString("efternavn");
                     String medlemstypeString = rs.getString("medlemstype");
                     MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
+                    String engagementString = rs.getString("aktiv/passiv");
+                    MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
                     int aargang = rs.getInt("aargang");
-                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, aargang));
+                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, engagement, aargang));
                 }
             }
         } catch (SQLException throwables) {
@@ -38,6 +41,33 @@ public class DbMembersMapper {
         return memberList;
     }
 
+    public List<Member> showAllMembersWithBalance() {
+        List<Member> memberList = new ArrayList<>();
+        String sql = "select * from member";
+        try (Connection connection = database.connect()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int mnr = rs.getInt("member_id");
+                    String fornavn = rs.getString("fornavn");
+                    String efternavn = rs.getString("efternavn");
+
+                    String medlemstypeString = rs.getString("medlemstype");
+                    MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
+
+                    String engagementString = rs.getString("aktiv/passiv");
+                    MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
+
+                    int aargang = rs.getInt("aargang");
+                    int balance = getMemberBalance(mnr);
+                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, engagement, aargang, balance));
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return memberList;
+    }
 
     //    kunne også være, at det var smart at returnere objektet...
 //    skulle den her tilhøre en anden mapper-klasse?
@@ -117,8 +147,27 @@ public class DbMembersMapper {
         }
         return restance;
     }
-}
 
+
+    public void payMemberDebt(int mnr) {
+        boolean result = false;
+        String sql = "update subscription_payments set status = ? where member_id = ?";
+//        String sql = "update mario.order set pizza_id = ?, amount = ?, pickup_time = ?, custemor_name = ?, phone = ? where order_nr = ?";
+        try (Connection connection = database.connect()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, 0);
+                ps.setInt(2, mnr);
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected == 1) {
+                    result = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+}
 
 
 

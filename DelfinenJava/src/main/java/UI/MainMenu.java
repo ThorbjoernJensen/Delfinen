@@ -21,30 +21,45 @@ public class MainMenu {
     DbMembersMapper dbMembersMapper = new DbMembersMapper(database);
 
     public void run() {
-        showMainMenu();
         boolean running = true;
 
         while (running) {
+            showMainMenu();
             int valg = Input.getInt("Indtast dit valg: ");
             switch (valg) {
                 case (1):
                     showMembers();
+                    System.out.println("\n");
                     break;
 
                 case (3): {
                     cashierMessage();
+                    System.out.println("\n");
                     break;
 
                 }
                 case (4): {
                     sendPaymentRequestToAll();
+                    System.out.println("\n");
                     break;
 
                 }
                 case (5): {
                     showBalanceInfoAllMembers();
+                    System.out.println("\n");
                     break;
 
+                }
+                case (6): {
+                    showBadPayers();
+                    System.out.println("\n");
+                    break;
+
+                }
+                case (7): {
+                    paySubscriptionForMember();
+                    System.out.println("\n");
+                    break;
                 }
 
                 case (9):
@@ -53,9 +68,7 @@ public class MainMenu {
                 default:
                     System.out.println("du har tastet forkert.");
                     running = false;
-
             }
-
         }
 
     }
@@ -66,8 +79,10 @@ public class MainMenu {
         System.out.println("Du har følgende valmligheder:");
         System.out.println("1: vis medlemsliste");
         System.out.println("3: varsel om ny kontingent-betaling til alle medlemmer");
-        System.out.println("4: udskriv opkrævning af kontingent til alle medlemmer");
-        System.out.println("5: udskriv saldo for kontingentbetaling for alle medlemmer");
+        System.out.println("4: send opkrævning af kontingent til alle medlemmer");
+        System.out.println("5: udskriv saldo for for alle medlemmer");
+        System.out.println("6: vis dårlige betalere");
+        System.out.println("7: betal gæld for medlem");
         System.out.println("9: afslut");
 
     }
@@ -76,22 +91,18 @@ public class MainMenu {
         List<Member> members = dbMembersMapper.showAllMembers();
         for (Member s : members) {
             System.out.println("medlemsnr " + s.getMnr() + ": " + s.getFornavn() + "  " + s.getEfternavn() + ", type: " + s.getMedlemstype());
-
         }
-
-
     }
 
-//        man kunne sende en besked herfra - men man kunne også have det som en funktion i cashier-klassen.
-//    må "domæne-klasser" ikke have nogle handlinger? der kunne f.eks. være et objekt der hed pizzabager. eller admin
-//    brugeren selv er vel også en slags objekt -
 
+//        man kunne sende en besked herfra - men man kunne også have det som en funktion i cashier-klassen.
+//    må "domæne-klasser" ikke have nogle handlinger/initiativ? I Jons design ser det ud til at alt initiativ udgår fra UI.
+//    der kunne f.eks. være et objekt der hed pizzabager. eller admin brugeren selv er vel også en slags objekt -
     private void cashierMessage() {
         List<Member> members = dbMembersMapper.showAllMembers();
         Subject cashier = new Cashier(members);
         Cashier cashier1 = new Cashier(members);
         cashier1.setMessage("så er der kontingent.");
-
     }
 
 
@@ -111,12 +122,35 @@ public class MainMenu {
     }
 
     private void showBalanceInfoAllMembers() {
-        List<Member> members = dbMembersMapper.showAllMembers();
+        List<Member> members = dbMembersMapper.showAllMembersWithBalance();
 //        System.out.println(dbMembersMapper.getMemberBalance(5));
-        for (Member m: members){
-            int balance = dbMembersMapper.getMemberBalance(m.getMnr());
-            m.setBalance(balance);
-            System.out.println("medlem nr. "+ m.getMnr() + " skylder " + m.getBalance() + " kr.");
+        for (Member m : members) {
+           System.out.println("medlem nr. " + m.getMnr() + " skylder " + m.getBalance() + " kr.");
+        }
+    }
+
+    private void showBadPayers() {
+        List<Member> members = dbMembersMapper.showAllMembersWithBalance();
+        for (Member m : members){
+            if (m.getBalance()>0){
+                System.out.println("medlem nr. " + m.getMnr() + " skylder " + m.getBalance() + " kr.");
+            }
+        }
+    }
+
+    private void paySubscriptionForMember() {
+        int valg = Input.getInt("indtast medlemsnummer: ");
+        int debt = dbMembersMapper.getMemberBalance(valg);
+        System.out.println("medlem med nr. "+ valg + " skylder " + debt +" kr.");
+
+        String valg2 = Input.getString("betal gæld? j/n: ");
+        if(valg2.equalsIgnoreCase("j")){
+            dbMembersMapper.payMemberDebt(valg);
+
+            System.out.println("gælden er nu slettet i vores system");
+        }
+        else{
+            System.out.println("vi betalte ikke nogen gæld.");
         }
     }
 }

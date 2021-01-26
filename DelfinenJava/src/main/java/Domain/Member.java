@@ -3,27 +3,41 @@ package Domain;
 import java.time.Year;
 
 public class Member implements Observer {
-    private String message;
-    private Subject cashier;
-
 
     private int mnr;
     private String fornavn;
     private String efternavn;
     private MemberType medlemstype;
+    private MemberActivityLevel engagement;
     private int aargang;
-
-    private Subscription annualSubscription;
-    private int memberPayment;
 
     private int balance;
 
-    public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, int aargang) {
+    private int memberPayment;
+    private Subscription annualSubscription;
+    private String message;
+    private Subject cashier;
+
+
+
+    public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang) {
         this.mnr = mnr;
         this.fornavn = fornavn;
         this.efternavn = efternavn;
         this.medlemstype = medlemstype;
+        this.engagement = engagement;
         this.aargang = aargang;
+    }
+
+//    constructor til showAllMembersWithBalance
+    public Member(int mnr, String fornavn, String efternavn, MemberType medlemstype, MemberActivityLevel engagement, int aargang, int balance) {
+        this.mnr = mnr;
+        this.fornavn = fornavn;
+        this.efternavn = efternavn;
+        this.medlemstype = medlemstype;
+        this.engagement = engagement;
+        this.aargang = aargang;
+        this.balance = balance;
     }
 
     //            constructor til at implementere observer pattern
@@ -35,8 +49,9 @@ public class Member implements Observer {
         this.aargang = aargang;
         this.cashier = cashier;
         cashier.registerObserver(this);
-
     }
+
+
 
     public int getMnr() {
         return mnr;
@@ -83,11 +98,11 @@ public class Member implements Observer {
         return balance;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
 
+//    public void setBalance(int balance) {
+//        this.balance = balance;
+//    }
 
-    }
 
     //    hvis vi overrider update-funktionen giver det cashier mulighed for både at sende beskeder og opkrævning ud fra samme interface
 
@@ -99,7 +114,7 @@ public class Member implements Observer {
     public void update(Subscription newPayment) {
         this.annualSubscription = newPayment;
         calculateMyPayment();
-//        System.out.println("medlem nr. " + mnr + " skal betale " + memberPayment);
+
     }
 
     public int getMemberPayment() {
@@ -109,7 +124,6 @@ public class Member implements Observer {
     public int calculateAgeAtSubscriptionTime() {
         int year = Year.now().getValue();
         return year - aargang;
-
     }
 
     //    ville være oplagt at omregne til procent-rabat, så det er lettere at styre efter index
