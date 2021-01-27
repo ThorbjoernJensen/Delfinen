@@ -1,5 +1,7 @@
 package Domain;
 
 public enum Distance {
-    50m, 100m, 200m, 400m
+    kort, mellem, lang
+
+    //    50 , 100, 200, 800
 }
