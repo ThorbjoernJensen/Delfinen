@@ -29,7 +29,7 @@ public class DbMembersMapper {
                     String efternavn = rs.getString("efternavn");
                     String medlemstypeString = rs.getString("medlemstype");
                     MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
-                    String engagementString = rs.getString("aktiv/passiv");
+                    String engagementString = rs.getString("engagement");
                     MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
                     int aargang = rs.getInt("aargang");
                     memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, engagement, aargang));
@@ -55,7 +55,7 @@ public class DbMembersMapper {
                     String medlemstypeString = rs.getString("medlemstype");
                     MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
 
-                    String engagementString = rs.getString("aktiv/passiv");
+                    String engagementString = rs.getString("engagement");
                     MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
 
                     int aargang = rs.getInt("aargang");

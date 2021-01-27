@@ -22,20 +22,23 @@ public class MainMenu {
 
         while (running) {
             showMainMenu();
+
             int valg = Input.getInt("Indtast dit valg: ");
             switch (valg) {
                 case (1):
-                    showMembers();
+                    showMemberDataMenu();
+                    memberDataMenuLoop();
                     System.out.println("\n");
                     break;
                 case (2): {
-                    insertNewMember();
-
+                    showMemberSubscriptionMenu();
+                    showMemberSubscriptionMenuLoop();
                     System.out.println("\n");
                     break;
                 }
+
                 case (3): {
-                    cashierMessage();
+                    showResultsMenu();
                     System.out.println("\n");
                     break;
 
@@ -46,26 +49,11 @@ public class MainMenu {
                     break;
 
                 }
-                case (5): {
-                    showBalanceInfoAllMembers();
-                    System.out.println("\n");
-                    break;
 
-                }
-                case (6): {
-                    showBadPayers();
-                    System.out.println("\n");
-                    break;
-
-                }
-                case (7): {
-                    paySubscriptionForMember();
-                    System.out.println("\n");
-                    break;
-                }
-
-                case (9):
+                case (0):
                     System.out.println("vi lukker for i dag");
+                    running = false;
+                    break;
 
                 default:
                     System.out.println("du har tastet forkert.");
@@ -75,20 +63,108 @@ public class MainMenu {
 
     }
 
-
     public void showMainMenu() {
         System.out.println("**** Hovedmenu for svømmeklubben DELFINEN's ITSYSTEM ****");
         System.out.println("Du har følgende valgmligheder:");
-        System.out.println("1: vis medlemsliste");
+
+        System.out.println("1: medlemskartotek");
+        System.out.println("2: medlemskontingent");
+        System.out.println("3: svømmeresultater");
+        System.out.println("0: tilbage");
+    }
+
+    private void showMemberDataMenu() {
+        System.out.println("\n");
+        System.out.println("Menu - medlemskartotek");
+        System.out.println("1: vis liste over alle medlemmer");
         System.out.println("2: opret nyt medlem");
+        System.out.println("3: rediger oplysninger for eksisterende medlem");
+        System.out.println("4: slet medlem fra databasen");
+        System.out.println("0: tilbage");
+    }
 
-        System.out.println("3: varsel om ny kontingent-betaling til alle medlemmer");
-        System.out.println("4: send opkrævning af kontingent til alle medlemmer");
-        System.out.println("5: udskriv saldo for for alle medlemmer");
-        System.out.println("6: vis dårlige betalere");
-        System.out.println("7: betal gæld for medlem");
-        System.out.println("9: afslut");
+    private void memberDataMenuLoop() {
 
+        int valg = Input.getInt("Indtast dit valg: ");
+        System.out.println("\n");
+        switch (valg) {
+            case (1):
+                showMembers();
+                System.out.println("\n");
+                break;
+            case (2): {
+                insertNewMember();
+                System.out.println("\n");
+                break;
+            }
+            case (0): {
+                showMainMenu();
+                break;
+            }
+            default:
+                System.out.println("du har tastet forkert.");
+                showMainMenu();
+                break;
+        }
+    }
+
+    private void showMemberSubscriptionMenu() {
+        System.out.println("\n");
+        System.out.println("Menu - medlemskontingent");
+        System.out.println("1: varsel om ny kontingent-betaling til alle medlemmer");
+        System.out.println("2: udsend opkrævning af kontingent til alle medlemmer");
+        System.out.println("3: udskriv saldo for for alle medlemmer");
+        System.out.println("4: vis dårlige betalere");
+        System.out.println("5: betal gæld for medlem");
+        System.out.println("0: afslut");
+    }
+
+    private void showMemberSubscriptionMenuLoop() {
+        int valg = Input.getInt("Indtast dit valg: ");
+        switch (valg) {
+            case (1): {
+                cashierMessage();
+                System.out.println("\n");
+                break;
+            }
+            case (2): {
+                sendPaymentRequestToAll();
+                System.out.println("\n");
+                break;
+            }
+            case (3): {
+                showBalanceInfoAllMembers();
+                System.out.println("\n");
+                break;
+            }
+            case (4): {
+                showBadPayers();
+                System.out.println("\n");
+                break;
+            }
+            case (5): {
+                paySubscriptionForMember();
+                System.out.println("\n");
+                break;
+            }
+
+            case (0): {
+                showMainMenu();
+                break;
+            }
+
+            default:
+                System.out.println("du har tastet forkert.");
+                showMainMenu();
+                break;
+
+        }
+
+    }
+
+    private void showResultsMenu() {
+        System.out.println("\n");
+        System.out.println("Menu - svømmeresultater");
     }
 
     private void showMembers() {
@@ -113,8 +189,8 @@ public class MainMenu {
 
         Member newMember = new Member(fornavn, efternavn, medlemstype, engagement, aargang);
         boolean succes = dbMembersMapper.insertNewMember(newMember);
-        if(succes){
-            System.out.println("*************** "+ newMember.getFornavn() + " er nu en uundværlig del af vores svømmeklub. *************** ");
+        if (succes) {
+            System.out.println("*************** " + newMember.getFornavn() + " er nu en uundværlig del af vores svømmeklub. *************** ");
         }
 
     }
