@@ -165,6 +165,48 @@ public class MainMenu {
     private void showResultsMenu() {
         System.out.println("\n");
         System.out.println("Menu - svømmeresultater");
+        System.out.println("1: vis alle resultater");
+        System.out.println("2: vis resultater fordelt på svømmedisciplin og distance");
+        System.out.println("3: indsæt nyt resultat");
+        System.out.println("4:  - generer nye resultater -");
+        System.out.println("5: bestil ny doping - boosterpack");
+    }
+
+    private void resultsMenuLoop() {
+
+        int valg = Input.getInt("Indtast dit valg: ");
+        System.out.println("\n");
+        switch (valg) {
+            case (1):
+
+                System.out.println("\n");
+                break;
+            case (2): {
+
+                System.out.println("\n");
+                break;
+            }
+            case (3): {
+
+                System.out.println("\n");
+                break;
+            }
+            case (4): {
+
+                System.out.println("\n");
+                break;
+            }
+
+
+            case (0): {
+                showMainMenu();
+                break;
+            }
+            default:
+                System.out.println("du har tastet forkert.");
+                showMainMenu();
+                break;
+        }
     }
 
     private void showMembers() {
