@@ -41,7 +41,7 @@ public class DbResultsMapper {
 
         boolean updated = false;
         int newId = 0;
-        String sql = "insert into result (mnr, tid, swimmingStyle, distance) values(?,?,?,?)";
+        String sql = "insert into result (member_id, time, svømmedisciplin, distance) values(?,?,?,?)";
         try (Connection connection = database.connect()) {
             try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, r.getMnr());

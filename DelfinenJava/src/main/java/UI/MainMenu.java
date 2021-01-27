@@ -3,6 +3,7 @@ package UI;
 import Domain.*;
 import Persistence.Database;
 import Persistence.DbMembersMapper;
+import Persistence.DbResultsMapper;
 import Util.Input;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class MainMenu {
     Database database = new Database(USER, PASSWORD, URL);
 
     DbMembersMapper dbMembersMapper = new DbMembersMapper(database);
+    DbResultsMapper dbResultsMapper = new DbResultsMapper(database);
 
     public void run() {
         boolean running = true;
@@ -39,6 +41,7 @@ public class MainMenu {
 
                 case (3): {
                     showResultsMenu();
+                    resultsMenuLoop();
                     System.out.println("\n");
                     break;
 
@@ -174,7 +177,7 @@ public class MainMenu {
 
     private void resultsMenuLoop() {
 
-        int valg = Input.getInt("Indtast dit valg: ");
+        int valg = Input.getInt("Indtast dit resultat-valg: ");
         System.out.println("\n");
         switch (valg) {
             case (1):
@@ -187,6 +190,7 @@ public class MainMenu {
                 break;
             }
             case (3): {
+                insertNewResult();
 
                 System.out.println("\n");
                 break;
@@ -208,6 +212,7 @@ public class MainMenu {
                 break;
         }
     }
+
 
     private void showMembers() {
         List<Member> members = dbMembersMapper.showAllMembers();
@@ -291,4 +296,16 @@ public class MainMenu {
             System.out.println("vi betalte ikke nogen gæld.");
         }
     }
+
+    private void insertNewResult() {
+
+        int time = Input.getInt("indtast tid i sekunder");
+        int mnr = Input.getInt("indtast medlemsnummer for resultatet");
+        SwimmingStyle swimmingStyle = SwimmingStyle.valueOf(Input.getString("butterfly, crawl, rygcrawl, brystsvømning ?: "));
+        Distance distance = Distance.valueOf(Input.getString("kort(50), mellemkort(100), mellemlang(200) eller lang(800)?: "));
+
+        Result newResult = new Result(time, mnr, swimmingStyle, distance);
+        dbResultsMapper.insertNewResult(newResult);
+    }
+
 }
