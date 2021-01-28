@@ -52,6 +52,17 @@ public class MainMenu {
                     break;
 
                 }
+                case (5): {
+                    Resultsgenerator r = new Resultsgenerator();
+                    int valgDeltagere= Input.getInt("hvor mange resultater vil du have? ");
+                    List<Result> results = r.generateNewResults(valgDeltagere, 50);
+                    for (Result result : results) {
+                        dbResultsMapper.insertNewResult(result);
+                    }
+
+                    break;
+
+                }
 
                 case (0):
                     System.out.println("vi lukker for i dag");
@@ -73,6 +84,7 @@ public class MainMenu {
         System.out.println("1: medlemskartotek");
         System.out.println("2: medlemskontingent");
         System.out.println("3: svømmeresultater");
+        System.out.println("5: generer svømmeresultater");
         System.out.println("0: tilbage");
     }
 

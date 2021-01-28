@@ -1,10 +1,17 @@
 package Domain;
 
 public enum Distance {
-    kort, mellemkort, mellemlang, lang
+    SPRINT("50 m"), KORT("100 m"), MELLEMLANG("200 m"), LANG("800 m");
 
+    public String distanceName;
 
+    private Distance(String distanceName){
+        this.distanceName = distanceName;
+    }
 
-//    kort(50), mellemkort(100), mellemlang(200), lang(800)
+    public String getDistanceName() {
+        return distanceName;
+    }
+
 
 }
