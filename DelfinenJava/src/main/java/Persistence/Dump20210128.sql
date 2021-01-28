@@ -48,6 +48,33 @@ INSERT INTO `member` VALUES (1,'Hans','Soerensen','Agernvej 3',3700,'Roenne','m'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `result`
+--
+
+DROP TABLE IF EXISTS `result`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `result` (
+  `result_id` int NOT NULL AUTO_INCREMENT,
+  `member_id` int DEFAULT NULL,
+  `time` int DEFAULT NULL,
+  `svømmedisciplin` varchar(45) NOT NULL,
+  `distance` varchar(45) NOT NULL,
+  PRIMARY KEY (`result_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `result`
+--
+
+LOCK TABLES `result` WRITE;
+/*!40000 ALTER TABLE `result` DISABLE KEYS */;
+INSERT INTO `result` VALUES (1,12,26,'butterfly','kort'),(2,40,54,'brystsvømning','SPRINT'),(3,49,73,'rygcrawl','MELLEMLANG'),(4,26,104,'crawl','KORT'),(5,13,89,'rygcrawl','LANG'),(6,48,66,'crawl','MELLEMLANG'),(7,30,110,'rygcrawl','KORT'),(8,28,118,'brystsvømning','LANG'),(9,24,98,'butterfly','LANG'),(10,19,62,'butterfly','MELLEMLANG'),(11,8,145,'rygcrawl','LANG'),(12,26,137,'brystsvømning','LANG'),(13,29,63,'crawl','MELLEMLANG'),(14,29,58,'rygcrawl','MELLEMLANG'),(15,42,99,'butterfly','MELLEMLANG'),(16,42,59,'crawl','LANG'),(17,7,144,'brystsvømning','LANG'),(18,28,119,'butterfly','SPRINT'),(19,12,59,'butterfly','KORT'),(20,45,143,'brystsvømning','KORT');
+/*!40000 ALTER TABLE `result` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `subscription`
 --
 
@@ -109,4 +136,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-26 13:11:09
+-- Dump completed on 2021-01-28 13:37:00
