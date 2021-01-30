@@ -18,6 +18,11 @@ public class Member implements Observer {
 
     private int memberPayment;
     private Subscription annualSubscription;
+
+    public String getMessage() {
+        return message;
+    }
+
     private String message;
     private Subject cashier;
 
@@ -126,7 +131,7 @@ public class Member implements Observer {
 
     public void update(String message) {
         this.message = message;
-        System.out.println("medlem nr. " + mnr + " har fået beskeden: \"" + message.hashCode() + "\" fra kasseren. ");
+//        System.out.println("medlem nr. " + mnr + " har fået beskeden: "+ message);
     }
 
     public void update(Subscription newPayment) {

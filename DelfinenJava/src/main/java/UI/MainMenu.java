@@ -6,6 +6,7 @@ import Persistence.DbMembersMapper;
 import Persistence.DbResultsMapper;
 import Util.Input;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,17 +53,7 @@ public class MainMenu {
                     break;
 
                 }
-                case (5): {
-                    Resultsgenerator r = new Resultsgenerator();
-                    int valgDeltagere= Input.getInt("hvor mange resultater vil du have? ");
-                    List<Result> results = r.generateNewResults(valgDeltagere, 50);
-                    for (Result result : results) {
-                        dbResultsMapper.insertNewResult(result);
-                    }
 
-                    break;
-
-                }
 
                 case (0):
                     System.out.println("vi lukker for i dag");
@@ -84,7 +75,7 @@ public class MainMenu {
         System.out.println("1: medlemskartotek");
         System.out.println("2: medlemskontingent");
         System.out.println("3: svømmeresultater");
-        System.out.println("5: generer svømmeresultater");
+//        System.out.println("5: generer svømmeresultater");
         System.out.println("0: tilbage");
     }
 
@@ -182,9 +173,10 @@ public class MainMenu {
         System.out.println("Menu - svømmeresultater");
         System.out.println("1: vis alle resultater");
         System.out.println("2: vis resultater fordelt på svømmedisciplin og distance");
-        System.out.println("3: indsæt nyt resultat");
-        System.out.println("4:  - generer nye resultater -");
-        System.out.println("5: bestil ny doping - boosterpack");
+        System.out.println("3: indtast nyt resultat");
+        System.out.println("4: vis resultatlister for de enkelte discipliner");
+        System.out.println("5: inviter svømmere med hurtigste tider");
+        System.out.println("9:  - generer tilfældige resultater! -");
     }
 
     private void resultsMenuLoop() {
@@ -193,24 +185,38 @@ public class MainMenu {
         System.out.println("\n");
         switch (valg) {
             case (1):
-
                 System.out.println("\n");
                 break;
             case (2): {
-
                 System.out.println("\n");
                 break;
             }
             case (3): {
                 insertNewResult();
-
                 System.out.println("\n");
                 break;
             }
             case (4): {
-
+                displayResultLists();
                 System.out.println("\n");
                 break;
+            }
+            case (5): {
+                sendRequestToTopPerformers();
+                System.out.println("\n");
+                break;
+            }
+
+
+            case (9): {
+                Resultsgenerator r = new Resultsgenerator();
+                int valgDeltagere = Input.getInt("hvor mange resultater vil du have? ");
+                List<Result> results = r.generateNewResults(valgDeltagere, 50);
+                for (Result result : results) {
+                    dbResultsMapper.insertNewResult(result);
+                }
+                break;
+
             }
 
 
@@ -223,6 +229,125 @@ public class MainMenu {
                 showMainMenu();
                 break;
         }
+    }
+
+
+    private void displayResultLists() {
+
+        System.out.println("Svømmearter: ");
+        System.out.println("1: Butterfly");
+        System.out.println("2: Crawl");
+        System.out.println("3: Rygcrawl");
+        System.out.println("4: Brystsvømning");
+
+        SwimmingStyle swimmingStyle = swimmingStyleFromInt(Input.getInt("indtast nummer: "));
+        System.out.println("du valgte " + swimmingStyle.toString());
+
+
+        System.out.println("Distance: ");
+        System.out.println("1: Sprint - 50 m");
+        System.out.println("2: Kort - 100 m");
+        System.out.println("3: Mellemlang - 200 m");
+        System.out.println("4: Lang - 800m");
+
+        Distance distance = distanceFromInt(Input.getInt("indtast nummer: "));
+        System.out.println("du valgte " + distance.toString());
+
+        List<Result> results = dbResultsMapper.getResultList(swimmingStyle, distance);
+
+        System.out.println("her har vi en liste over resultater for dit valg " + distance.toString() + " " + swimmingStyle.name());
+        for (Result r : results) {
+            System.out.println("svømmer nr. " + r.getMnr() + " svømmede på tiden " + r.getTime());
+        }
+    }
+
+    public static Distance distanceFromInt(int distanceNr) {
+        for (Distance s : Distance.values()) {
+            if (s.getDistanceNr() == distanceNr) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public static SwimmingStyle swimmingStyleFromInt(int styleNr) {
+        for (SwimmingStyle s : SwimmingStyle.values()) {
+            if (s.getStyleNr() == styleNr) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private void sendRequestToTopPerformers() {
+        System.out.println("Svømmearter: ");
+        System.out.println("1: Butterfly");
+        System.out.println("2: Crawl");
+        System.out.println("3: Rygcrawl");
+        System.out.println("4: Brystsvømning");
+
+        SwimmingStyle swimmingStyle = swimmingStyleFromInt(Input.getInt("indtast nummer: "));
+        System.out.println("du valgte " + swimmingStyle.toString());
+
+
+        System.out.println("Distance: ");
+        System.out.println("1: Sprint - 50 m");
+        System.out.println("2: Kort - 100 m");
+        System.out.println("3: Mellemlang - 200 m");
+        System.out.println("4: Lang - 800m");
+
+        Distance distance = distanceFromInt(Input.getInt("indtast nummer: "));
+        System.out.println("du valgte " + distance.toString());
+
+        List<Result> results = dbResultsMapper.getResultList(swimmingStyle, distance);
+        List<Member> allMembers = dbMembersMapper.showAllMembers();
+
+        int antalSvømmere = Input.getInt("hvor mange svømmere vil du invitere?");
+
+        List<Member> invitedList = new ArrayList<>();
+
+        int i = 0;
+        int newInviteMnr;
+        Member newInvite=null;
+
+        while (invitedList.size() < antalSvømmere) {
+
+
+//            sætter newInvite til det Member-objekt som der peges på fra Result-listen.
+            newInviteMnr = results.get(i).getMnr();
+            for (Member m : allMembers) {
+                if (m.getMnr() == newInviteMnr)
+                    newInvite = m;
+            }
+//            tjekker om det udvalgte er tilmeldt som konkurrence-svømmer
+            if(newInvite.getMedlemstype()==MemberType.konkurrence) {
+//            tjekker om den nye udvalgte allerede er i listen. HVis ikke tilføjes den. ellers ny omgang i løkken
+                if (!invitedList.contains(newInvite)) {
+                    invitedList.add(newInvite);
+
+                }
+            }
+            i++;
+        }
+        System.out.println("Liste over de " + antalSvømmere + " hurtigste konkurrence-svømmere på "+ distance.getDistanceName()+" "+swimmingStyle+": ");
+        for (Member m : invitedList) {
+            System.out.println("medlem nr. " + m.getMnr() + ": " + m.getFornavn() + " " + m.getEfternavn());
+
+        }
+
+        String valgMail = Input.getString("Send invitation pr. mail? j/n:");
+        if (valgMail.equalsIgnoreCase("j")){
+            Trainer trainer = new Trainer(invitedList, "du inviteres hermed til konkurrence ("+ distance.getDistanceName()+" "+swimmingStyle+")");
+            trainer.notifyInvited();
+            for (Member m: invitedList){
+//                man kunne implementere det med en stringbuilder message 1 og message 2 fra træner.
+                System.out.print("kære "+ m.getFornavn() + " ");
+                System.out.println(m.getMessage());
+            }
+
+        }
+
+
     }
 
 

@@ -1,8 +1,12 @@
 package Persistence;
 
+import Domain.Distance;
 import Domain.Result;
+import Domain.SwimmingStyle;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbResultsMapper {
 
@@ -12,29 +16,7 @@ public class DbResultsMapper {
         this.database = database;
     }
 
-//    public List<Member> showAllResults() {
-//        List<Member> memberList = new ArrayList<>();
-//        String sql = "select * from member";
-//        try (Connection connection = database.connect()) {
-//            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-//                ResultSet rs = ps.executeQuery();
-//                while (rs.next()) {
-//                    int mnr = rs.getInt("member_id");
-//                    String fornavn = rs.getString("fornavn");
-//                    String efternavn = rs.getString("efternavn");
-//                    String medlemstypeString = rs.getString("medlemstype");
-//                    MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
-//                    String engagementString = rs.getString("engagement");
-//                    MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
-//                    int aargang = rs.getInt("aargang");
-//                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, engagement, aargang));
-//                }
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return memberList;
-//    }
+
 
 
     public boolean insertNewResult(Result r) {
@@ -70,6 +52,57 @@ public class DbResultsMapper {
 
     }
 
+    public List<Result> getResultList(SwimmingStyle swimmingStyle, Distance distance) {
+        List<Result> resultList = new ArrayList<>();
+        String sql= "Select * from result where svømmedisciplin= ? AND distance= ? order by time ";
+
+        try (Connection connection = database.connect()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, swimmingStyle.name());
+            ps.setString(2, distance.name());
+
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()){
+                    int time = rs.getInt("time");
+                    int mnr = rs.getInt("member_id");
+
+                    resultList.add(new Result(time, mnr, swimmingStyle, distance));
+                }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+
+        return resultList;
+
+
+    }
+
+//    public List<Member> showAllResults() {
+//        List<Member> memberList = new ArrayList<>();
+//        String sql = "select * from member";
+//        try (Connection connection = database.connect()) {
+//            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+//                ResultSet rs = ps.executeQuery();
+//                while (rs.next()) {
+//                    int mnr = rs.getInt("member_id");
+//                    String fornavn = rs.getString("fornavn");
+//                    String efternavn = rs.getString("efternavn");
+//                    String medlemstypeString = rs.getString("medlemstype");
+//                    MemberType medlemstype = MemberType.valueOf(medlemstypeString); //konverterer string fra db til enum
+//                    String engagementString = rs.getString("engagement");
+//                    MemberActivityLevel engagement = MemberActivityLevel.valueOf(engagementString);
+//                    int aargang = rs.getInt("aargang");
+//                    memberList.add(new Member(mnr, fornavn, efternavn, medlemstype, engagement, aargang));
+//                }
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        return memberList;
+//    }
 
 //    public void insertMemberPayment(Subscription subscription, Member member) {
 //        boolean result = false;
