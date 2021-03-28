@@ -31,29 +31,23 @@ public class MainMenu {
                 case (1):
                     showMemberDataMenu();
                     memberDataMenuLoop();
-                    System.out.println("\n");
                     break;
                 case (2): {
                     showMemberSubscriptionMenu();
                     showMemberSubscriptionMenuLoop();
-                    System.out.println("\n");
                     break;
                 }
 
                 case (3): {
                     showResultsMenu();
                     resultsMenuLoop();
-                    System.out.println("\n");
                     break;
-
                 }
+
                 case (4): {
                     sendPaymentRequestToAll();
-                    System.out.println("\n");
                     break;
-
                 }
-
 
                 case (0):
                     System.out.println("vi lukker for i dag");
@@ -69,9 +63,9 @@ public class MainMenu {
     }
 
     public void showMainMenu() {
+        System.out.println("\n");
         System.out.println("**** Hovedmenu for svømmeklubben DELFINEN's ITSYSTEM ****");
         System.out.println("Du har følgende valgmligheder:");
-
         System.out.println("1: medlemskartotek");
         System.out.println("2: medlemskontingent");
         System.out.println("3: svømmeresultater");
@@ -90,17 +84,14 @@ public class MainMenu {
     }
 
     private void memberDataMenuLoop() {
-
         int valg = Input.getInt("Indtast dit valg: ");
-        System.out.println("\n");
+//        System.out.println("\n");
         switch (valg) {
             case (1):
                 showMembers();
-                System.out.println("\n");
                 break;
             case (2): {
                 insertNewMember();
-                System.out.println("\n");
                 break;
             }
             case (0): {
@@ -308,7 +299,7 @@ public class MainMenu {
 
         int i = 0;
         int newInviteMnr;
-        Member newInvite=null;
+        Member newInvite = null;
 
         while (invitedList.size() < antalSvømmere) {
 
@@ -320,7 +311,7 @@ public class MainMenu {
                     newInvite = m;
             }
 //            tjekker om det udvalgte er tilmeldt som konkurrence-svømmer
-            if(newInvite.getMedlemstype()==MemberType.konkurrence) {
+            if (newInvite.getMedlemstype() == MemberType.konkurrence) {
 //            tjekker om den nye udvalgte allerede er i listen. HVis ikke tilføjes den. ellers ny omgang i løkken
                 if (!invitedList.contains(newInvite)) {
                     invitedList.add(newInvite);
@@ -329,19 +320,19 @@ public class MainMenu {
             }
             i++;
         }
-        System.out.println("Liste over de " + antalSvømmere + " hurtigste konkurrence-svømmere på "+ distance.getDistanceName()+" "+swimmingStyle+": ");
+        System.out.println("Liste over de " + antalSvømmere + " hurtigste konkurrence-svømmere på " + distance.getDistanceName() + " " + swimmingStyle + ": ");
         for (Member m : invitedList) {
             System.out.println("medlem nr. " + m.getMnr() + ": " + m.getFornavn() + " " + m.getEfternavn());
 
         }
 
         String valgMail = Input.getString("Send invitation pr. mail? j/n:");
-        if (valgMail.equalsIgnoreCase("j")){
-            Trainer trainer = new Trainer(invitedList, "du inviteres hermed til konkurrence ("+ distance.getDistanceName()+" "+swimmingStyle+")");
+        if (valgMail.equalsIgnoreCase("j")) {
+            Trainer trainer = new Trainer(invitedList, "du inviteres hermed til konkurrence (" + distance.getDistanceName() + " " + swimmingStyle + ")");
             trainer.notifyInvited();
-            for (Member m: invitedList){
+            for (Member m : invitedList) {
 //                man kunne implementere det med en stringbuilder message 1 og message 2 fra træner.
-                System.out.print("kære "+ m.getFornavn() + " ");
+                System.out.print("kære " + m.getFornavn() + " ");
                 System.out.println(m.getMessage());
             }
 
